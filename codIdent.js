@@ -56,7 +56,7 @@ function myOsint() {
 
 function myDroid() {
     let valorDroid = 'gratuito';
-    window.confirm(`iaDroid Reverse: valor => ${valorDroid}`);
+    window.confirm(`Reverso: valor => ${valorDroid}`);
     console.log(valorDroid);
 };
 
