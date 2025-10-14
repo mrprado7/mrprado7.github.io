@@ -35,7 +35,7 @@ function carregarDadosJSON(caminhoArquivo) {
            .then(dados => {
             console.log("Dados carregados:", dados);
 	    cofre = dados;
-            atualizarSelect();
+            
 	  
       // Você pode manipular os dados aqui
          })
@@ -73,21 +73,10 @@ function carregarDadosJSON(caminhoArquivo) {
       const reader = new FileReader();
       reader.onload = function(e) {
         cofre = JSON.parse(e.target.result);
-        //atualizarSelect();
       };
       reader.readAsText(file);
     }
 
-    /*function atualizarSelect() {
-      const select = document.getElementById("selecao");
-      select.innerHTML = "";
-      Object.keys(cofre).forEach(nome => {
-        const opt = document.createElement("option");
-        opt.value = nome;
-        opt.textContent = nome;
-        select.appendChild(opt);
-      });
-    }*/
 
 async function descriptografar() {
   try {
