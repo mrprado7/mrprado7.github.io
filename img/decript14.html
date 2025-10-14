@@ -7,7 +7,7 @@
 <body>
   <h2>Descriptografar Mensagens do Cofre</h2>
 
-  <input type="file" id="fileInput" accept=".json" onchange="importarJSON(event)">
+ <!-- <input type="file" id="fileInput" accept=".json" onchange="importarJSON(event)">-->
   <br><br>
   <label for="selecao">Escolha uma mensagem:</label>
   <select id="selecao"></select>
@@ -19,7 +19,34 @@
 
   <script>
     let cofre = {};
+    let caminhoArquivo = 'cofre.json';
+	  
+	  
+	  
+function carregarDadosJSON(caminhoArquivo) {
+           fetch(caminhoArquivo)
+            .then(response => {
+               if (!response.ok) {
+                throw new Error(`Erro ao carregar o arquivo: ${response.status}`);
+           }
+          return response.json();
+           })
+           .then(dados => {
+            console.log("Dados carregados:", dados);
+	    cofre = dados;
+            atualizarSelect();
+	  
+      // Você pode manipular os dados aqui
+         })
+    .catch(erro => {
+      console.error("Erro ao acessar o JSON:", erro);
+    });
+}
 
+	  
+	  
+	  
+	  
     function base64ParaBuffer(base64) {
       const bin = atob(base64);
       return Uint8Array.from(bin, c => c.charCodeAt(0));
@@ -35,6 +62,8 @@
         name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256"
       }, chaveBase, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
     }
+
+	  
 
     function importarJSON(event) {
       const file = event.target.files[0];
@@ -83,6 +112,8 @@
         document.getElementById("saida2").textContent = "❌ Erro ao descriptografar (senha incorreta ou dados inválidos)";
       }
     }
+	  
+	  carregarDadosJSON(caminhoArquivo);
   </script>
 </body>
 </html>
