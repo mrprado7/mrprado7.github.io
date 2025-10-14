@@ -33,11 +33,8 @@ function carregarDadosJSON(caminhoArquivo) {
           return response.json();
            })
            .then(dados => {
-            console.log("Dados carregados:", dados);
-	    cofre = dados;
-            
-	  
-      // Você pode manipular os dados aqui
+            //console.log("Dados carregados:", dados);
+	         cofre = dados;
          })
     .catch(erro => {
       console.error("Erro ao acessar o JSON:", erro);
