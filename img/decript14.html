@@ -9,8 +9,9 @@
 
  <!-- <input type="file" id="fileInput" accept=".json" onchange="importarJSON(event)">-->
   <br><br>
-  <label for="selecao">Escolha uma mensagem:</label>
-  <select id="selecao"></select>
+ <label for="selecao">Digite o nome da mensagem:</label>
+<input type="text" id="selecao" placeholder="Ex: segredo1">
+
   <br><br>
   <input id="senha2" placeholder="Digite a senha" type="text">
   <button onclick="descriptografar()">Descriptografar</button>
@@ -72,12 +73,12 @@ function carregarDadosJSON(caminhoArquivo) {
       const reader = new FileReader();
       reader.onload = function(e) {
         cofre = JSON.parse(e.target.result);
-        atualizarSelect();
+        //atualizarSelect();
       };
       reader.readAsText(file);
     }
 
-    function atualizarSelect() {
+    /*function atualizarSelect() {
       const select = document.getElementById("selecao");
       select.innerHTML = "";
       Object.keys(cofre).forEach(nome => {
@@ -86,32 +87,38 @@ function carregarDadosJSON(caminhoArquivo) {
         opt.textContent = nome;
         select.appendChild(opt);
       });
+    }*/
+
+async function descriptografar() {
+  try {
+    const nome = document.getElementById("selecao").value.trim();
+    const senha = document.getElementById("senha2").value;
+    const item = cofre[nome];
+
+    if (!item) {
+      document.getElementById("saida2").textContent = `❌ Mensagem "${nome}" não encontrada no cofre.`;
+      return;
     }
 
-    async function descriptografar() {
-      try {
-        const nome = document.getElementById("selecao").value;
-        const senha = document.getElementById("senha2").value;
-        const item = cofre[nome];
-
-        if (!item || !senha) {
-          alert("Selecione uma mensagem e informe a senha.");
-          return;
-        }
-
-        const salt = base64ParaBuffer(item.salt);
-        const iv = base64ParaBuffer(item.iv);
-        const data = base64ParaBuffer(item.data);
-        const chave = await gerarChave(senha, salt);
-
-        const decifrado = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, chave, data);
-        const dec = new TextDecoder();
-        document.getElementById("saida2").textContent =
-          `Mensagem "${nome}": ` + dec.decode(decifrado);
-      } catch (e) {
-        document.getElementById("saida2").textContent = "❌ Erro ao descriptografar (senha incorreta ou dados inválidos)";
-      }
+    if (!senha) {
+      alert("Informe a senha.");
+      return;
     }
+
+    const salt = base64ParaBuffer(item.salt);
+    const iv = base64ParaBuffer(item.iv);
+    const data = base64ParaBuffer(item.data);
+    const chave = await gerarChave(senha, salt);
+
+    const decifrado = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, chave, data);
+    const dec = new TextDecoder();
+    document.getElementById("saida2").textContent =
+      `Mensagem "${nome}": ` + dec.decode(decifrado);
+  } catch (e) {
+    document.getElementById("saida2").textContent = "❌ Erro ao descriptografar (senha incorreta ou dados inválidos)";
+  }
+}
+
 	  
 	  carregarDadosJSON(caminhoArquivo);
   </script>
